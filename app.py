@@ -95,35 +95,92 @@ def clasificar_riesgo(sintomas, otros):
 def generar_orientacion(sintomas, otros, nivel):
 
     prompt = f"""
-    Actúa como un asistente biomédico educativo.
+    Actúa como asistente biomédico educativo.
 
-    Edad:
-    {edad}
-
-    Síntomas seleccionados:
+    Síntomas:
     {sintomas}
 
-    Otros síntomas:
+    Otros:
     {otros}
 
-    Clasificación:
+    Riesgo:
     {nivel}
 
-    Genera:
+    Da:
     - explicación breve
     - recomendaciones generales
     - señales de alarma
-    - advertencia médica final
 
-    IMPORTANTE:
-    - No diagnosticar enfermedades
-    - No formular tratamientos
-    - No reemplazar médicos
+    No diagnostiques.
     """
 
-    respuesta = model.generate_content(prompt)
+    try:
 
-    return respuesta.text
+        respuesta = model.generate_content(prompt)
+
+        return respuesta.text
+
+    except:
+
+        if "🔴" in nivel:
+
+            return """
+⚠️ ORIENTACIÓN AUTOMÁTICA DE RESPALDO
+
+Los síntomas reportados podrían requerir atención médica inmediata.
+
+Recomendaciones:
+- Buscar atención médica urgente
+- No automedicarse
+- Mantener reposo
+- Acudir a urgencias si empeora
+
+Señales de alarma:
+- dificultad respiratoria
+- dolor intenso
+- pérdida de conciencia
+- fiebre persistente
+
+Este sistema NO reemplaza personal médico.
+"""
+
+        elif "🟡" in nivel:
+
+            return """
+⚠️ ORIENTACIÓN AUTOMÁTICA DE RESPALDO
+
+Los síntomas sugieren valoración médica recomendable.
+
+Recomendaciones:
+- Consultar médico
+- Mantener hidratación
+- Descansar
+- Monitorear síntomas
+
+Buscar atención urgente si aparecen:
+- dificultad para respirar
+- dolor intenso
+- desmayos
+
+Este sistema NO reemplaza personal médico.
+"""
+
+        else:
+
+            return """
+⚠️ ORIENTACIÓN AUTOMÁTICA DE RESPALDO
+
+Los síntomas parecen leves actualmente.
+
+Recomendaciones:
+- Descanso
+- Hidratación
+- Vigilar evolución
+
+Consultar médico si empeoran los síntomas.
+
+Este sistema NO reemplaza personal médico.
+"""
 
 # BOTÓN
 if st.button("Analizar síntomas"):

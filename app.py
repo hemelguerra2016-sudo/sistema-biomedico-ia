@@ -92,6 +92,7 @@ def clasificar_riesgo(sintomas, otros):
     return "verde"
 
 # FUNCIÓN IA
+# FUNCIÓN IA
 def generar_orientacion(sintomas, otros, nivel):
 
     prompt = f"""
@@ -120,8 +121,8 @@ def generar_orientacion(sintomas, otros, nivel):
 
         return respuesta.text
 
-except Exception as e:
+    except Exception as e:
 
-    st.write(e)
+        st.write(e)
 
-    return "ERROR IA"
+        return "ERROR IA"

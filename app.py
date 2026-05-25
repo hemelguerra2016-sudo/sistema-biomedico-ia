@@ -39,6 +39,30 @@ edad = st.number_input(
     min_value=0,
     max_value=120
 )
+sexo = st.selectbox(
+    "Sexo biológico",
+    [
+        "Masculino",
+        "Femenino"
+    ]
+)
+duracion = st.selectbox(
+    "Duración de síntomas",
+    [
+        "Menos de 24 horas",
+        "1-3 días",
+        "Más de 3 días"
+    ]
+)
+antecedentes = st.multiselect(
+    "Antecedentes médicos",
+    [
+        "Hipertensión",
+        "Diabetes",
+        "Asma",
+        "Cardiopatías",
+        "Ninguno"   ]
+)
 
 sintomas = st.multiselect(
     "Seleccione síntomas",
@@ -91,28 +115,34 @@ def clasificar_riesgo(sintomas, otros):
 
     return "verde"
 
-# FUNCIÓN IA
-# FUNCIÓN IA
-def generar_orientacion(sintomas, otros, nivel):
+# FUNCIÓN IA + RESPALDO
+def generar_orientacion(sintomas, otros, nivel, sexo, antecedentes):
 
     prompt = f"""
     Actúa como asistente biomédico educativo.
 
+    Sexo:
+    {sexo}
+
+    Antecedentes:
+    {antecedentes}
+
     Síntomas:
     {sintomas}
 
-    Otros:
+    Otros síntomas:
     {otros}
 
-    Riesgo:
+    Riesgo clínico:
     {nivel}
 
-    Da:
-    - explicación breve
+    Explica:
+    - posible significado clínico
     - recomendaciones generales
     - señales de alarma
 
-    No diagnostiques.
+    NO diagnostiques.
+    NO reemplaces al médico.
     """
 
     try:
@@ -121,11 +151,68 @@ def generar_orientacion(sintomas, otros, nivel):
 
         return respuesta.text
 
-    except Exception as e:
+    except Exception:
 
-        st.write(e)
+        # RESPALDO AUTOMÁTICO
 
-        return "ERROR IA"
+        if nivel == "rojo":
+
+            return """
+🚨 POSIBLE SITUACIÓN DE RIESGO CLÍNICO
+
+Se recomienda acudir inmediatamente
+a un servicio médico de urgencias.
+
+Señales de alarma:
+- dificultad respiratoria
+- dolor intenso
+- pérdida de conciencia
+- empeoramiento rápido
+
+Recomendaciones:
+- no automedicarse
+- mantener acompañamiento
+- buscar atención inmediata
+
+⚠️ Este sistema NO reemplaza evaluación médica profesional.
+"""
+
+        elif nivel == "amarillo":
+
+            return """
+⚠️ LOS SÍNTOMAS REQUIEREN VALORACIÓN MÉDICA
+
+Recomendaciones generales:
+- hidratación
+- reposo
+- monitoreo de síntomas
+- consulta médica si empeoran
+
+Señales de alarma:
+- fiebre persistente
+- dificultad respiratoria
+- dolor progresivo
+
+⚠️ Este sistema NO reemplaza evaluación médica profesional.
+"""
+
+        else:
+
+            return """
+✅ SÍNTOMAS LEVES
+
+Recomendaciones generales:
+- descanso
+- hidratación
+- observación clínica básica
+
+Consultar médico si aparecen:
+- nuevos síntomas
+- empeoramiento
+- fiebre persistente
+
+⚠️ Este sistema NO reemplaza evaluación médica profesional.
+"""
 # BOTÓN ANALIZAR
 if st.button("Analizar síntomas"):
 
@@ -152,10 +239,12 @@ if st.button("Analizar síntomas"):
     # IA
     st.subheader("Orientación biomédica")
 
-    respuesta = generar_orientacion(
-        sintomas,
-        otros,
-        nivel
-    )
+respuesta = generar_orientacion(
+    sintomas,
+    otros,
+    nivel,
+    sexo,
+    antecedentes
+)
 
     st.write(respuesta)

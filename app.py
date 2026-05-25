@@ -221,7 +221,6 @@ if st.button("Analizar síntomas"):
         otros
     )
 
-    # RESULTADO VISUAL
     st.subheader("Resultado clínico")
 
     if nivel == "rojo":
@@ -236,15 +235,14 @@ if st.button("Analizar síntomas"):
 
         st.success("🟢 Síntomas leves")
 
-    # IA
     st.subheader("Orientación biomédica")
 
-respuesta = generar_orientacion(
-    sintomas,
-    otros,
-    nivel,
-    sexo,
-    antecedentes
-)
+    respuesta = generar_orientacion(
+        sintomas,
+        otros,
+        nivel,
+        sexo,
+        antecedentes
+    )
 
     st.write(respuesta)

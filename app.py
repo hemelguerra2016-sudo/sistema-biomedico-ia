@@ -126,3 +126,36 @@ def generar_orientacion(sintomas, otros, nivel):
         st.write(e)
 
         return "ERROR IA"
+# BOTÓN ANALIZAR
+if st.button("Analizar síntomas"):
+
+    nivel = clasificar_riesgo(
+        sintomas,
+        otros
+    )
+
+    # RESULTADO VISUAL
+    st.subheader("Resultado clínico")
+
+    if nivel == "rojo":
+
+        st.error("🔴 Atención médica inmediata recomendada")
+
+    elif nivel == "amarillo":
+
+        st.warning("🟡 Recomendable consultar médico")
+
+    else:
+
+        st.success("🟢 Síntomas leves")
+
+    # IA
+    st.subheader("Orientación biomédica")
+
+    respuesta = generar_orientacion(
+        sintomas,
+        otros,
+        nivel
+    )
+
+    st.write(respuesta)
